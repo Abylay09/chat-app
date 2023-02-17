@@ -5,18 +5,19 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createRoutesFromElements, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Route } from 'react-router';
+import { ThemeProvider } from 'styled-components';
+import { Theme } from './styles/Theme';
+import Layout from './components/layout/Layout';
+import { CookiesProvider } from 'react-cookie';
+import UserAuth from 'context/UserAuthContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-type RouterProps = {
-  children: React.ReactNode; // 👈️ type children
-};
-
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route>
+    <Route element={<Layout />}>
       <Route index element={<App />} />
     </Route>
   )
@@ -24,7 +25,13 @@ const router = createBrowserRouter(
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <CookiesProvider>
+      <ThemeProvider theme={Theme}>
+        <UserAuth>
+          <RouterProvider router={router} />
+        </UserAuth>
+      </ThemeProvider>
+    </CookiesProvider>
   </React.StrictMode>
 );
 

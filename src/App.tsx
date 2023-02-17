@@ -1,38 +1,36 @@
-import React, { useState } from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from './firebase/firebase';
-
+import React, { useContext, useEffect, useState } from 'react';
+import { auth, db } from './firebase/firebase';
+import { collection, doc, setDoc, getDoc, query, onSnapshot, orderBy, getDocs } from "firebase/firestore";
 import './App.css';
+import SignUp from './components/auth/SignUp';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { AuthContext } from 'context/UserAuthContext';
 
 function App() {
-  const [email, setEmail] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
-
-  async function sendData() {
-    await createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log(user);
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-        // ..
-      });
+  const { user } = useContext(AuthContext)
+  async function get() {
+    const q = query(collection(db, "messages"))
+    const querySnapshot = await getDocs(q);
+    console.log(querySnapshot);
   }
+
+  // useEffect(() => {
+  //   // get()
+  //   const q = query(collection(db, 'messages'));
+  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //     let messages: { id: string; }[] = [];
+  //     querySnapshot.forEach((doc) => {
+  //       messages.push({ ...doc.data(), id: doc.id });
+  //     });
+  //     console.log(messages);
+
+  //   });
+  //   return () => unsubscribe();
+  // }, []);
 
   return (
     <div className="App">
-      <div>
-        <label htmlFor="email">Email</label>
-        <input type="text" onChange={event => setEmail(event.target.value)} />
-        <label htmlFor="password">Password</label>
-        <input type="text" onChange={event => setPassword(event.target.value)} />
-        <button onClick={() => sendData()}>Sign in</button>
-      </div>
+      {user ? <>Авторизован</> : <> не вторизован</>}
     </div>
   );
 }
