@@ -5,6 +5,7 @@ import './App.css';
 import SignUp from './components/auth/SignUp';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { AuthContext } from 'context/UserAuthContext';
+import Chat from 'components/chat/Chat';
 
 function App() {
   const { user } = useContext(AuthContext)
@@ -27,10 +28,11 @@ function App() {
   //   });
   //   return () => unsubscribe();
   // }, []);
+  console.log(user);
 
   return (
     <div className="App">
-      {user ? <>Авторизован</> : <> не вторизован</>}
+      {user ? <><Chat /></> : <> не вторизован</>}
     </div>
   );
 }
