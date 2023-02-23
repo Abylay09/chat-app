@@ -6,7 +6,8 @@ interface IMessageProps {
   text: string,
   image: string,
   uid: string,
-  time: any
+  time: any,
+  fullName : string
 }
 
 const MessageWrapper = styled.div`
@@ -51,19 +52,16 @@ const MessageAuthor = styled.h3<{ myMessage: boolean }>`
   ${props => props.myMessage ? "text-align : right;" : "text-align : left;"}
 `
 
-function Message({ text, image, uid, time }: IMessageProps) {
+function Message({ text, image, uid, time, fullName }: IMessageProps) {
   const { user } = useContext(AuthContext)
-  console.log(time.toDate().getHours());
-
   return (
     <>
-
       <MessageWrapper >
-        <MessageAuthor myMessage={user.uid == uid}>{user.displayName}</MessageAuthor>
+        <MessageAuthor myMessage={user.uid == uid}>{fullName}</MessageAuthor>
         <MessageData myMessage={user.uid == uid}>
           <MessageImage src={image} alt="" />
           <MessageText>{text}</MessageText>
-          <MessageTime myMessage={user.uid == uid}> {time.toDate().getHours()} : {time.toDate().getMinutes()}</MessageTime>
+          <MessageTime myMessage={user.uid == uid}> {time.toDate().getHours()} : {time.toDate().getMinutes() < 10 ?  "0" + time.toDate().getMinutes() : time.toDate().getMinutes()}</MessageTime>
         </MessageData>
 
       </MessageWrapper>

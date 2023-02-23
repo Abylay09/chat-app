@@ -4,6 +4,7 @@ export const Container = styled.div`
     max-width : 800px;
     width : 100%;
     margin : auto;
+    height : 100vh;
 `
 
 export const HeaderWrapper = styled.header`

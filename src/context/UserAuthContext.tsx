@@ -11,7 +11,6 @@ function UserAuth({ children }: { children: React.ReactElement }) {
     
     function signin() {
         signInWithPopup(auth, provider)
-        // signInWithRedirect(auth, provider)
     }
 
     const logout = () => {

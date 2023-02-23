@@ -17,11 +17,6 @@ export const Label = styled.label`
     font-weight : 500;
 `
 
-
-export const Button = styled.button`
-
-`
-
 const appear = keyframes`
   from {
     opacity : 0;

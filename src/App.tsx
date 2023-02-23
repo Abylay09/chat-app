@@ -9,30 +9,10 @@ import Chat from 'components/chat/Chat';
 
 function App() {
   const { user } = useContext(AuthContext)
-  async function get() {
-    const q = query(collection(db, "messages"))
-    const querySnapshot = await getDocs(q);
-    console.log(querySnapshot);
-  }
-
-  // useEffect(() => {
-  //   // get()
-  //   const q = query(collection(db, 'messages'));
-  //   const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //     let messages: { id: string; }[] = [];
-  //     querySnapshot.forEach((doc) => {
-  //       messages.push({ ...doc.data(), id: doc.id });
-  //     });
-  //     console.log(messages);
-
-  //   });
-  //   return () => unsubscribe();
-  // }, []);
-  console.log(user);
 
   return (
     <div className="App">
-      {user ? <><Chat /></> : <> не вторизован</>}
+      {user ? <><Chat /></> : <> не Авторизован</>}
     </div>
   );
 }

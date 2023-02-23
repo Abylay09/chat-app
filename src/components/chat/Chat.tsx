@@ -1,16 +1,17 @@
-import { db } from '../../firebase/firebase';
-import { addDoc, collection, doc, limit, onSnapshot, orderBy, query, setDoc } from 'firebase/firestore';
-import React, { useContext, useEffect, useState } from 'react'
-import { useCollection } from 'react-firebase-hooks/firestore';
+import {  db } from '../../firebase/firebase';
+import { addDoc, collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components';
 import Message from './Message';
 import { AuthContext } from 'context/UserAuthContext';
-import { ReactComponent as sendIcon } from 'images/send-icon.svg';
+import { ReactComponent as SendIcon } from 'images/send-icon.svg';
+
 interface IMessage {
     text: string,
     time: any,
     userImage: string,
-    userId: string
+    userId: string,
+    fullName: string
 }
 
 const MessageInput = styled.input`
@@ -48,7 +49,6 @@ const ChatWrapper = styled.div`
     height : 100%;
     display : flex;
     flex-direction : column;
-    // justify-content : space-between;
 `
 
 const MessageList = styled.div`
@@ -65,20 +65,7 @@ function Chat() {
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [text, setText] = useState<string>("")
     const { user } = useContext(AuthContext)
-    // useEffect(() => {
-    //     const q = query(collection(db, 'chats'), orderBy("time"));
-    //     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    //         let messages: any = [];
-    //         querySnapshot.forEach((doc) => {
-    //             messages.push({ ...doc.data() });
-    //             console.log(doc.data().time.toDate());
-    //         });
-    //         setMessages(messages)
-    //     });
-    //     return () => unsubscribe();
-
-    // }, []);
-
+    const ref = useRef<any>();
     useEffect(() => {
         const q = query(collection(db, 'messages'), orderBy("time"));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -88,19 +75,25 @@ function Chat() {
             });
             setMessages(messages)
         });
-        return () => unsubscribe();
 
+        setTimeout(() => {
+            ref.current.scrollIntoView({ behavior: "smooth" })
+        }, 1500);
+        
+        return () => unsubscribe();
     }, []);
 
     async function sendMessage() {
         if (text !== "" && text.trim().length > 0) {
             await addDoc(collection(db, "messages"), {
+                fullName: user.displayName,
                 text: text,
                 time: new Date(),
                 userId: user.uid,
-                userImage: user.photoURL
+                userImage: user.photoURL,
             });
             setText("")
+            ref.current.scrollIntoView({ behavior: "smooth" })
         } else {
             return
         }
@@ -110,15 +103,16 @@ function Chat() {
         <ChatWrapper>
             <MessageList>
                 {
-                    messages.map(message => <Message time = {message.time} uid={message.userId} image={message.userImage} text={message.text} />)
+                    messages.map(message => <Message fullName={message.fullName} time={message.time} uid={message.userId} image={message.userImage} text={message.text} />)
                 }
+                <span ref={ref}></span>
             </MessageList>
 
             <MessageWrapper>
-                <MessageInput placeholder='Message here' type="text" value={text} onChange={event => setText(event.target.value)} />
-                <SendBtn onClick={sendMessage}><span>→</span> </SendBtn>
+                <MessageInput onKeyPress={(e) => e.key === "Enter" ? sendMessage() : ""} placeholder='Message here' type="text" value={text} onChange={event => setText(event.target.value)} />
+                <SendBtn onClick={sendMessage} ><SendIcon width={24} height={24} /></SendBtn>
             </MessageWrapper>
-        </ChatWrapper>
+        </ChatWrapper >
     )
 }
 

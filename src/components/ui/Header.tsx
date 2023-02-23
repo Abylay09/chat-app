@@ -5,7 +5,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { AuthContext } from 'context/UserAuthContext';
 
 function Header() {
-    const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const authContext = useContext(AuthContext)
 
 
@@ -20,8 +20,6 @@ function Header() {
                     user ? <LogOutBtn onClick={() => authContext.logout()}>Logout</LogOutBtn>
                         : <AuthBtn onClick={() => authContext.signin()}>Google auth</AuthBtn>
                 }
-
-
             </div>
 
         </HeaderWrapper>
