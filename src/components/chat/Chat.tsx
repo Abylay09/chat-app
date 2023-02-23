@@ -52,7 +52,9 @@ const ChatWrapper = styled.div`
 `
 
 const MessageList = styled.div`
-    // overflow-y: scroll;
+    display : flex;
+    flex-direction : column;
+    gap : 32px;
     overflow: auto;
     flex : 1;
     background-color : #f5f5f5;
@@ -60,7 +62,6 @@ const MessageList = styled.div`
 `
 
 function Chat() {
-    // const [snapshot, loading, error] = useCollection(collection(db, 'messages'),);
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [text, setText] = useState<string>("")
     const { user } = useContext(AuthContext)
@@ -109,7 +110,7 @@ function Chat() {
         <ChatWrapper>
             <MessageList>
                 {
-                    messages.map(message => <Message uid={message.userId} image={message.userImage} text={message.text} />)
+                    messages.map(message => <Message time = {message.time} uid={message.userId} image={message.userImage} text={message.text} />)
                 }
             </MessageList>
 

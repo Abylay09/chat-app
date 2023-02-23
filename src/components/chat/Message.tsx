@@ -5,14 +5,25 @@ import styled from 'styled-components'
 interface IMessageProps {
   text: string,
   image: string,
-  uid: string
+  uid: string,
+  time: any
 }
 
+const MessageWrapper = styled.div`
+  // position : relative;
+  // display : flex;
+  // align-items :center;
+  // gap : 12px;
+  // margin-top : 12px;
+`
+
 const MessageData = styled.div<{ myMessage: boolean }>`
+  position : relative;
   display : flex;
-  align-items : center;
+  align-items :flex-start;
   gap : 12px;
-  flex-direction: ${props => props.myMessage ? "row-reverse" : "row"} ;
+  flex-direction: ${props => props.myMessage ? "row-reverse" : "row"};
+
 `
 const MessageImage = styled.img`
   border-radius : 100%;
@@ -21,19 +32,43 @@ const MessageImage = styled.img`
 `
 const MessageText = styled.p`
   font-size : 18px;
+  text-align: right;
+  margin : 0;
 `
 
-const MessageTime = styled.span`
+const MessageTime = styled.span<{ myMessage: boolean }>`
   font-size : 14px;
+  font-weight : 500;
+  position : absolute;
+  bottom : -26px;
+  ${props => props.myMessage ? "right : 0;" : "left : 0;"}
+  
 `
 
-function Message({ text, image, uid }: IMessageProps) {
+const MessageAuthor = styled.h3<{ myMessage: boolean }>`
+  color : ${props => props.theme.colors.second};
+  font-size : 16px;
+  ${props => props.myMessage ? "text-align : right;" : "text-align : left;"}
+`
+
+function Message({ text, image, uid, time }: IMessageProps) {
   const { user } = useContext(AuthContext)
+  console.log(time.toDate().getHours());
+
   return (
-    <MessageData myMessage={user.uid == uid}>
-      <MessageImage src={image} alt="" />
-      <MessageText>{text}</MessageText>
-    </MessageData>
+    <>
+
+      <MessageWrapper >
+        <MessageAuthor myMessage={user.uid == uid}>{user.displayName}</MessageAuthor>
+        <MessageData myMessage={user.uid == uid}>
+          <MessageImage src={image} alt="" />
+          <MessageText>{text}</MessageText>
+          <MessageTime myMessage={user.uid == uid}> {time.toDate().getHours()} : {time.toDate().getMinutes()}</MessageTime>
+        </MessageData>
+
+      </MessageWrapper>
+    </>
+
   )
 }
 
